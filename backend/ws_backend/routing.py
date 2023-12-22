@@ -4,7 +4,7 @@ from django.urls import path
 from ws_backend import consumers
 
 websocket_urlpatterns = [
-    path('ws/game/', consumers.GameConsumer.as_asgi()),
+    path('ws/game/<uuid:game_id>', consumers.GameConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
