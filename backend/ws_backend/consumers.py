@@ -1,13 +1,17 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from .core.game_logic import Game
+from .core.game_logic.game_logic import Game
 import json
+from django.core.cache import cache
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.group_name = f'game_{self.game_id}'
-        self.game = Game(self.game_id)
+        if not cache.get(self.game_id):
+            self.game = Game(self.game_id)
+            cache.set(self.game_id, self.game)
+            
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
