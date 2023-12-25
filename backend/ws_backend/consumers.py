@@ -8,6 +8,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.group_name = f'game_{self.game_id}'
+        # need init game message here
         if not cache.get(self.game_id):
             self.game = Game(self.game_id)
             cache.set(self.game_id, self.game)
