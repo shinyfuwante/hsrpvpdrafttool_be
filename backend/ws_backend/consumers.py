@@ -1,6 +1,8 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from .core.game_logic.game_logic import Game
+from .internal.game_logic.game_logic import Game
+from .internal.enums import MessageType
 import json
+import random
 from django.core.cache import cache
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
@@ -8,10 +10,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.group_name = f'game_{self.game_id}'
-        # need init game message here
-        if not cache.get(self.game_id):
-            self.game = Game(self.game_id)
-            cache.set(self.game_id, self.game)
             
         await self.channel_layer.group_add(
             self.group_name,
@@ -19,14 +17,20 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         )
         await self.accept()
 
-        # Implement session handling or game setup logic here
+        # Add the channel_name to the list of participants in the cache
+        participants = cache.get(self.game_id, [])
+        participants.append(self.channel_name)
+        cache.set(self.game_id, participants)
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
         )
-        pass
+        # Remove the channel_name from the list of participants in the cache
+        participants = cache.get(self.game_id, [])
+        participants.remove(self.channel_name)
+        cache.set(self.game_id, participants)
     
     async def receive(self, text_data):
         try:
@@ -38,22 +42,45 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         await self.receive_json(content)
         
     async def receive_json(self, content):
-        print('received_json')
-        game_state = await self.game_state(content)
-        # publishes to Redis channel
-        await self.channel_layer.group_send(
-            self.group_name,
-            {
-                'type': 'game_state', # determines what method to call.. 
-                'game_state': 'test',
-                'sender_channel_name': self.channel_name
-            }
-        )
-        pass
+        message_type = content.get('type')
+
+        if message_type is None or not hasattr(self, message_type):
+            print(f"Received message with invalid type: {message_type}")
+            return
+
+        handler = getattr(self, message_type)
+        await handler(content)
+        
+        
+    async def init_game(self, event):
+        print("Received init game message")
+        participants = cache.get(self.game_id)
+        print("participants: " + str(participants))
+        if participants and len(participants) == 2:
+            print("Assigning sides")
+            selector = random.choice(participants)
+            print("selected selector: " + selector)
+            waiter = participants[0] if participants[1] == selector else participants[1]
+            cache.set(f'{self.game_id}_selector', selector)
+            print("set selector in cache")
+            cache.set(f'{self.game_id}_waiter', waiter)
+            print("set waiter in cache")
+            await self.channel_layer.group_send(self.group_name, {
+                'type': 'front_end_message',
+                'message_type': MessageType.SIDE_SELECT.value,
+                'selector': selector
+            })
+            print("sent side select message to group")
+        else:
+            await self.channel_layer.group_send(self.group_name, {
+                'type': 'front_end_message',
+                'message_type': 'error',
+            })
     
     async def game_state(self, event):
         print('received game_state message')
         print(event)
         await self.send_json(event['game_state'])
-
-    # Implement methods to handle incoming WebSocket messages and manage game sessions
+        
+    async def front_end_message(self, event):
+        pass
