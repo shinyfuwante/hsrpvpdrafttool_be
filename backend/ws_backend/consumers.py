@@ -4,6 +4,8 @@ from .internal.enums import MessageType
 import json
 import random
 from django.core.cache import cache
+import logging
+logger = logging.getLogger(__name__)
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
@@ -16,7 +18,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-
         # Add the channel_name to the list of participants in the cache
         participants = cache.get(self.game_id, [])
         participants.append(self.channel_name)
@@ -32,14 +33,14 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         participants.remove(self.channel_name)
         cache.set(self.game_id, participants)
     
-    async def receive(self, text_data):
-        try:
-            content = json.loads(text_data)
-        except json.JSONDecodeError:
-            print(f"Invalid JSON: {text_data}")
-            return
+    # async def receive(self, text_data):
+    #     try:
+    #         content = json.loads(text_data)
+    #     except json.JSONDecodeError:
+    #         print(f"Invalid JSON: {text_data}")
+    #         return
 
-        await self.receive_json(content)
+    #     await self.receive_json(content)
         
     async def receive_json(self, content):
         message_type = content.get('type')
@@ -55,32 +56,29 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def init_game(self, event):
         print("Received init game message")
         participants = cache.get(self.game_id)
-        print("participants: " + str(participants))
         if participants and len(participants) == 2:
-            print("Assigning sides")
             selector = random.choice(participants)
-            print("selected selector: " + selector)
             waiter = participants[0] if participants[1] == selector else participants[1]
             cache.set(f'{self.game_id}_selector', selector)
-            print("set selector in cache")
             cache.set(f'{self.game_id}_waiter', waiter)
-            print("set waiter in cache")
-            await self.channel_layer.group_send(self.group_name, {
-                'type': 'front_end_message',
+            message = {
                 'message_type': MessageType.SIDE_SELECT.value,
                 'selector': selector
-            })
-            print("sent side select message to group")
+            }
+            logger.info(f"Sending message to channel {self.channel_name}: {message}")
+            await self.channel_layer.group_send(self.group_name, {'type': "front_end_message", 'message': message})
         else:
             await self.channel_layer.group_send(self.group_name, {
                 'type': 'front_end_message',
-                'message_type': 'error',
+                'message': 'error',
             })
     
     async def game_state(self, event):
         print('received game_state message')
         print(event)
-        await self.send_json(event['game_state'])
+        await self.channel_layer.group_send(self.group_name, { 'type': 'front_end_message', 'message' : 'world' })
         
     async def front_end_message(self, event):
-        pass
+        print("received front_end_message")
+        await self.send_json(event['message'])
+        
