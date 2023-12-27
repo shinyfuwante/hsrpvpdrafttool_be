@@ -3,7 +3,17 @@ from channels.testing import WebsocketCommunicator
 from ws_backend.routing import application
 from ..internal.enums import MessageType
 from django.core.cache import cache
-import asyncio
+from ..internal.draft_choices import Ban, Pick
+import json
+
+# Load the JSON data from a file
+with open('../internal.characters.json', 'r') as f:
+    characters = json.load(f)
+
+
+# Load the JSON data from a file
+with open('../internal/light_cones.json', 'r') as f:
+    light_cones = json.load(f)
 
 class GameConsumerTests(ChannelsLiveServerTestCase):
     SERVER_URL = "ws/game/72e111a7-4c01-43bc-90eb-04b274949dfa"
@@ -47,5 +57,27 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         self.assertEqual(res1['message_type'], MessageType.GAME_START.value)
         res2 = await waiter.receive_json_from()
         self.assertEqual(res2['message_type'], MessageType.GAME_START.value)
+        
+        # we now play the game
+        # selector will send a ban message, then waiter will send a ban message
+        message = {
+            'type': MessageType.BAN.value,
+            'message_type': MessageType.BAN.value,
+            'ban': characters['Arlan']
+        }
+        await selector.send_json_to(message)
+        res1 = await selector.receive_json_from()
+        self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
+        res2 = await waiter.receive_json_from()
+        self.assertEqual(res2['message_type'], MessageType.GAME_STATE.value)
+        message = {
+            'type': MessageType.BAN.value,
+            'message_type': MessageType.BAN.value,
+            'ban': characters['Herta']
+        }
+        res1 = await selector.receive_json_from()
+        self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
+        res2 = await waiter.receive_json_from()
+        self.assertEqual(res2['message_type'], MessageType.GAME_STATE.value)
         await communicator1.disconnect()
         await communicator2.disconnect()

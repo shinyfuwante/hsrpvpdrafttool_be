@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Pick:
-    id: int
     name: str
     eidolon: int
     stars: int
@@ -13,6 +12,5 @@ class Pick:
     
 @dataclass
 class Ban:
-    id: int
     name: str
     stars: int
