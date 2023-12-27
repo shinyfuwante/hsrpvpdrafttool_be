@@ -22,5 +22,4 @@ class Game:
         pass
 
     def get_state(self):
-        # Return the current game state
         return self.state
