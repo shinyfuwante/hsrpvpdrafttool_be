@@ -33,15 +33,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         participants = cache.get(self.game_id, [])
         participants.remove(self.channel_name)
         cache.set(self.game_id, participants, self.cache_timeout)
-    
-    # async def receive(self, text_data):
-    #     try:
-    #         content = json.loads(text_data)
-    #     except json.JSONDecodeError:
-    #         print(f"Invalid JSON: {text_data}")
-    #         return
-
-    #     await self.receive_json(content)
         
     async def receive_json(self, content):
         message_type = content.get('type')
@@ -109,9 +100,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     
     async def game_state(self, event):
         print('received game_state message')
-        print(event)
-        await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message' : 'world' })
+        await self.send_json(event['message'])
         
+    async def draft_ban(self, event):
+        print('received ban message')
+        game = cache.get(f'{self.game_id}_game')
+        res = game.update_state(event['ban'], 'ban')
+        cache.set(f'{self.game_id}_game', game, self.cache_timeout)
+        payload = {
+            'message_type': MessageType.GAME_STATE.value,
+            'game_state': game.get_state(),
+            'success': res
+        }
+        await self.channel_layer.group_send(self.group_name, { 'type': MessageType.GAME_STATE.value, 'message': payload })
     async def front_end_message(self, event):
         print("received front_end_message")
         await self.send_json(event['message'])

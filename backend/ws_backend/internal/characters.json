@@ -1,172 +1,170 @@
-[
-  {
-    "March 7th": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Dan Heng": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Himeko": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Welt": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Kafka": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Silver Wolf": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Arlan": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Asta": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Herta": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Bronya": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Seele": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Serval": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Gepard": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Natasha": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Pela": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Clara": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Sampo": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Hook": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Lynx": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Luka": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Topaz & Numby": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Qingque": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Tingyun": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Luocha": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Jing Yuan": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Blade": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Sushang": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Yukong": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Fu Xuan": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Yanqing": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Guinaifen": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Bailu": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Jingliu": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Dan Heng Imbibitor Lunae": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Xueyi": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Hanya": {
-      "rarity": 4,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Huohuo": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Argenti": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Ruan Mei": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "Dr. Ratio": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "TrailblazerDestruction": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    },
-    "TrailblazerPreservation": {
-      "rarity": 5,
-      "point_costs": [1, 2, 3, 4, 5, 6, 7]
-    }
+{
+  "March 7th": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Dan Heng": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Himeko": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Welt": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Kafka": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Silver Wolf": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Arlan": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Asta": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Herta": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Bronya": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Seele": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Serval": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Gepard": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Natasha": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Pela": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Clara": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Sampo": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Hook": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Lynx": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Luka": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Topaz & Numby": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Qingque": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Tingyun": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Luocha": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Jing Yuan": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Blade": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Sushang": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Yukong": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Fu Xuan": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Yanqing": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Guinaifen": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Bailu": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Jingliu": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Dan Heng Imbibitor Lunae": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Xueyi": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Hanya": {
+    "rarity": 4,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Huohuo": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Argenti": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Ruan Mei": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "Dr. Ratio": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "TrailblazerDestruction": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
+  },
+  "TrailblazerPreservation": {
+    "rarity": 5,
+    "point_costs": [1, 2, 3, 4, 5, 6, 7]
   }
-]
+}

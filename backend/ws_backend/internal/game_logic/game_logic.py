@@ -1,25 +1,40 @@
 class Game:
     def __init__(self, game_id, player1, player2):
         self.game_id = game_id
-        self.player1 = player1
-        self.player2 = player2
+        self.blue_team = player1
+        self.red_team = player2
+        self.turn_index = 0
         self.state = {
-            'bans': {self.player1: [], self.player2: []},
-            'picks': {self. player1: [], self.player2: []},
+            'bans': {"blue_team": [], "red_team": []},
+            'picks': {"blue_team": [], "red_team": []},
             'turn_order': [
-                (self.player1, 'ban'), (self.player2, 'ban'),
-                (self.player1, 'pick'), (self.player2, 'pick'), (self.player2, 'pick'), (self.player1, 'pick'),
-                (self.player2, 'ban'), (self.player1, 'ban'),
-                (self.player2, 'pick'), (self.player1, 'pick'), (self.player1, 'pick'), (self.player2, 'pick'),
-                (self.player2, 'pick'), (self.player1, 'pick'), (self.player1, 'pick'), (self.player2, 'pick'),
-                (self.player2, 'pick'), (self.player1, 'pick'), (self.player1, 'pick'), (self.player2, 'pick'),
-                (self.player2, 'pick'),
+                ("blue_team", 'ban'), ("red_team", 'ban'),
+                ("blue_team", 'pick'), ("red_team", 'pick'), ("red_team", 'pick'), ("blue_team", 'pick'),
+                ("red_team", 'ban'), ("blue_team", 'ban'),
+                ("red_team", 'pick'), ("blue_team", 'pick'), ("blue_team", 'pick'), ("red_team", 'pick'),
+                ("red_team", 'pick'), ("blue_team", 'pick'), ("blue_team", 'pick'), ("red_team", 'pick'),
+                ("red_team", 'pick'), ("blue_team", 'pick'), ("blue_team", 'pick'), ("red_team", 'pick'),
+                ("red_team", 'pick'),
             ]
         }
 
-    def update_state(self, changes):
-        # Update the game state based on the changes
-        pass
+    def update_state(self, character, pick_type):
+        if pick_type == 'ban':
+            if self.state['turn_order'][self.turn_index][1] != 'ban':
+                print("Error: not ban phase")
+                return False
+            self.state['bans'][self.state['turn_order'][self.turn_index][0]].append(character)
+            self.turn_index += 1
+        else:
+            if self.state['turn_order'][self.turn_index][1] != 'pick':
+                print("Error: not pick phase")
+                return False
+            self.state['picks'][self.state['turn_order'][self.turn_index][0]].append(character)
+            self.turn_index += 1
+        return True
 
     def get_state(self):
         return self.state
+    
+    def get_turn_index(self):
+        return self.turn_index

@@ -5,14 +5,14 @@ from ..internal.enums import MessageType
 from django.core.cache import cache
 from ..internal.draft_choices import Ban, Pick
 import json
+import os
 
-# Load the JSON data from a file
-with open('../internal.characters.json', 'r') as f:
+print(os.getcwd())
+with open('./ws_backend/internal/characters.json', 'r') as f:
     characters = json.load(f)
+    
 
-
-# Load the JSON data from a file
-with open('../internal/light_cones.json', 'r') as f:
+with open('./ws_backend/internal/light_cones.json', 'r') as f:
     light_cones = json.load(f)
 
 class GameConsumerTests(ChannelsLiveServerTestCase):
@@ -63,21 +63,27 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         message = {
             'type': MessageType.BAN.value,
             'message_type': MessageType.BAN.value,
-            'ban': characters['Arlan']
+            'ban': 'Arlan'
         }
         await selector.send_json_to(message)
         res1 = await selector.receive_json_from()
         self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
-        res2 = await waiter.receive_json_from()
-        self.assertEqual(res2['message_type'], MessageType.GAME_STATE.value)
+        game_state_bans = res1['game_state'].get('bans')
+        self.assertEqual('Arlan' in game_state_bans['blue_team'], True)
         message = {
             'type': MessageType.BAN.value,
             'message_type': MessageType.BAN.value,
-            'ban': characters['Herta']
+            'ban': 'Herta'
         }
+        await waiter.send_json_to(message)
         res1 = await selector.receive_json_from()
         self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
-        res2 = await waiter.receive_json_from()
-        self.assertEqual(res2['message_type'], MessageType.GAME_STATE.value)
+        game_state_bans = res1['game_state'].get('bans')
+        print(game_state_bans)
+        self.assertEqual('Herta' in game_state_bans['red_team'], True)
+        # res1 = await selector.receive_json_from()
+        # self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
+        # res2 = await waiter.receive_json_from()
+        # self.assertEqual(res2['message_type'], MessageType.GAME_STATE.value)
         await communicator1.disconnect()
         await communicator2.disconnect()
