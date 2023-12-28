@@ -112,7 +112,36 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'message': payload
         }
         await self.channel_layer.group_send(self.group_name, message)
-        
+    
+    def reset_game(self, event):
+        print("Received reset game message")
+        game = cache.get(f'{self.game_id}_game')
+        game.reset_game()
+        cache.set(f'{self.game_id}_game', game, self.cache_timeout)
+        payload = {
+            'message_type': MessageType.GAME_STATE.value,
+            'game_state': game.get_state()
+        }
+        message = {
+                'type': MessageType.FRONT_END_MESSAGE.value,
+                'message': payload
+        }
+        return message
+    
+    def undo(self, event):
+        print("Received undo message")
+        game = cache.get(f'{self.game_id}_game')
+        game.undo_turn()
+        cache.set(f'{self.game_id}_game', game, self.cache_timeout)
+        payload = {
+            'message_type': MessageType.GAME_STATE.value,
+            'game_state': game.get_state()
+        }
+        message = {
+                'type': MessageType.FRONT_END_MESSAGE.value,
+                'message': payload
+        }
+        return message
     
     async def game_state(self, event):
         print('received game_state message')

@@ -41,3 +41,29 @@ class Game:
     
     def get_turn_index(self):
         return self.turn_index
+    
+    def reset_game(self):
+        self.state = {
+            'bans': {"blue_team": [], "red_team": []},
+            'picks': {"blue_team": [], "red_team": []},
+            'turn_order': [
+                ("blue_team", 'ban'), ("red_team", 'ban'),
+                ("blue_team", 'pick'), ("red_team", 'pick'), ("red_team", 'pick'), ("blue_team", 'pick'),
+                ("red_team", 'ban'), ("blue_team", 'ban'),
+                ("red_team", 'pick'), ("blue_team", 'pick'), ("blue_team", 'pick'), ("red_team", 'pick'),
+                ("red_team", 'pick'), ("blue_team", 'pick'), ("blue_team", 'pick'), ("red_team", 'pick'),
+                ("red_team", 'pick'), ("blue_team", 'pick'), ("blue_team", 'pick'), ("red_team", 'pick'),
+                ("red_team", 'pick'),
+            ]
+        }
+        self.turn_index = 0
+        
+    def undo_turn(self):
+        if self.turn_index == 0:
+            return False
+        self.turn_index -= 1
+        if self.state['turn_order'][self.turn_index][1] == 'ban':
+            self.state['bans'][self.state['turn_order'][self.turn_index][0]].pop()
+        else:
+            self.state['picks'][self.state['turn_order'][self.turn_index][0]].pop()
+        return True

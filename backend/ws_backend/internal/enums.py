@@ -10,3 +10,5 @@ class MessageType(Enum):
     FRONT_END_MESSAGE = 'front_end_message'
     BAN = "draft_ban"
     PICK = "draft_pick"
+    UNDO = "undo"
+    RESET_GAME = "reset_game"
