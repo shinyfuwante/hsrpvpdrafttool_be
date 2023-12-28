@@ -24,6 +24,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         participants = cache.get(self.game_id, [])
         participants.append(self.channel_name)
         cache.set(self.game_id, participants, self.cache_timeout)
+        if participants and len(participants) == 2:
+            await self.channel_layer.group_send(self.group_name, {
+                'type': MessageType.GAME_READY.value,
+            })
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -45,7 +49,18 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         handler = getattr(self, message_type)
         await handler(content)
         
-        
+    async def game_ready(self, event):
+        print("Received game ready message")
+        participants = cache.get(self.game_id)
+        if participants and len(participants) == 2:
+            payload = {
+                'message_type': MessageType.GAME_READY.value
+            }
+            message = {
+                'type': MessageType.FRONT_END_MESSAGE.value,
+                'message': payload
+            }
+            await self.send_json(message)
     async def init_game(self, event):
         print("Received init game message")
         participants = cache.get(self.game_id)

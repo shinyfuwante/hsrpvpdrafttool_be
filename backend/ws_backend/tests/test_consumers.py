@@ -34,6 +34,8 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
 
         assert connected1
         assert connected2
+        res1 = await communicator1.receive_json_from()
+        res2 = await communicator2.receive_json_from()
         # creator will send an init message to the server
         message = {
             'type': MessageType.INIT_GAME.value,

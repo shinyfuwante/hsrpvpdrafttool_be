@@ -2,6 +2,7 @@ from enum import Enum
 
 class MessageType(Enum):
     INIT_GAME = 'init_game'
+    GAME_READY = 'game_ready'
     GAME_START = 'game_start'
     GAME_STATE = 'game_state'
     SIDE_SELECT = "side_select"
