@@ -4,7 +4,7 @@ from .internal.enums import MessageType
 from .internal.draft_choices import Pick
 import random
 from django.core.cache import cache
-from dataclasses import asdict
+import json
 import logging
 logger = logging.getLogger(__name__)
 
@@ -118,9 +118,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def draft_pick(self, event):
         print('received pick message')
         game = cache.get(f'{self.game_id}_game')
-        input_pick = event['pick']
-        pick = Pick(input_pick['name'], input_pick['eidolon'], input_pick['lightcone_name'], input_pick['superimposition'] )
-        res = game.update_state(asdict(pick), 'pick')
+        res = game.update_state(event['pick'], 'pick')
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_STATE.value,

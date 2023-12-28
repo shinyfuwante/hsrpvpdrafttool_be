@@ -62,32 +62,41 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         
         # we now play the game
         # selector will send a ban message, then waiter will send a ban message
+        arlan_ban = {
+            'name': 'Arlan',
+            'team': 'blue_team'
+        }
         message = {
             'type': MessageType.BAN.value,
             'message_type': MessageType.BAN.value,
-            'ban': 'Arlan'
+            'ban': arlan_ban
         }
         await selector.send_json_to(message)
         res1 = await selector.receive_json_from()
         self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
         game_state_bans = res1['game_state'].get('bans')
-        self.assertEqual('Arlan' in game_state_bans['blue_team'], True)
+        self.assertEqual(arlan_ban in game_state_bans['blue_team'], True)
+        herta_ban = {
+            'name': 'Herta',
+            'team': 'red_team'
+        }
         message = {
             'type': MessageType.BAN.value,
             'message_type': MessageType.BAN.value,
-            'ban': 'Herta'
+            'ban': herta_ban
         }
         await waiter.send_json_to(message)
         res1 = await selector.receive_json_from()
         self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
         game_state_bans = res1['game_state'].get('bans')
-        self.assertEqual('Herta' in game_state_bans['red_team'], True)
+        self.assertEqual(herta_ban in game_state_bans['red_team'], True)
         # blue team picks Bronya E1S1 But the Battle Isn't Over
         bronya = {
             'name': 'Bronya',
             'eidolon': 1,
             'lightcone_name': 'But the Battle Isn\'t Over',
-            'superimposition': 1
+            'superimposition': 1,
+            'team': 'blue_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -101,13 +110,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Tingyun',
             'eidolon': 0,
             'lightcone_name': '',
-            'superimposition': 0
+            'superimposition': 0,
+            'team': 'red_team'
         }
         pela = {
             'name': 'Pela',
             'eidolon': 0,
             'lightcone_name': '',
-            'superimposition': 0
+            'superimposition': 0,
+            'team': 'red_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -131,7 +142,8 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Yukong',
             'eidolon': 0,
             'lightcone_name': 'Memories of the Past',
-            'superimposition': 5
+            'superimposition': 5,
+            'team': 'blue_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -141,18 +153,26 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
         # red team bans Blade
+        blade_ban = {
+            'name': 'Blade',
+            'team': 'red_team'
+        }
         message = {
             'type': MessageType.BAN.value,
             'message_type': MessageType.BAN.value,
-            'ban': 'Blade'
+            'ban': blade_ban
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         # blue team bans Dan Heng Imbibitor Lunae
+        dhil_ban = {
+            'name': 'Dan Heng Imbibitor Lunae',
+            'team': 'blue_team'
+        }
         message = {
             'type': MessageType.BAN.value,
             'message_type': MessageType.BAN.value,
-            'ban': 'Dan Heng Imbibitor Lunae'
+            'ban': dhil_ban
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
@@ -161,12 +181,13 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Seele',
             'eidolon': 0,
             'lightcone_name': 'In the Night',
-            'superimposition': 1
+            'superimposition': 1,
+            'team': 'red_team'
         }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': seele
+            'pick': seele,
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
@@ -175,13 +196,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Fu Xuan',
             'eidolon': 0,
             'lightcone_name': 'She Already Closed Her Eyes',
-            'superimposition': 1
+            'superimposition': 1,
+            'team': 'blue_team'
         }
         bailu = {
             'name': 'Bailu',
             'eidolon': 0,
             'lightcone_name': '',
-            'superimposition': 0
+            'superimposition': 0,
+            'team': 'blue_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -202,13 +225,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Luocha',
             'eidolon': 0,
             'lightcone_name': '',
-            'superimposition': 0
+            'superimposition': 0,
+            'team': 'red_team'
         }
         huohuo = {
             'name': 'Huohuo',
             'eidolon': 0,
             'lightcone_name': '',
-            'superimposition': 0
+            'superimposition': 0,
+            'team': 'red_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -229,13 +254,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Silver Wolf',
             'eidolon': 0,
             'lightcone_name': 'Good Night and Sleep Well',
-            'superimposition': 5
+            'superimposition': 5,
+            'team': 'blue_team'
         }
         kafka = {
             'name': 'Kafka',
             'eidolon': 2,
             'lightcone_name': 'Patience is All You Need',
-            'superimposition': 1
+            'superimposition': 1,
+            'team': 'blue_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -256,13 +283,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Jingliu',
             'eidolon': 0,
             'lightcone_name': 'On the Fall of an Aeon',
-            'superimposition': 5
+            'superimposition': 5,
+            'team': 'red_team'
         }
         asta = {
             'name': 'Asta',
             'eidolon': 6,
             'lightcone_name': 'Meshing Cogs',
-            'superimposition': 5
+            'superimposition': 5,
+            'team': 'red_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -283,13 +312,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Clara',
             'eidolon': 0,
             'lightcone_name': 'Something Irreplaceable',
-            'superimposition': 1
+            'superimposition': 1,
+            'team': 'blue_team'
         }
         topaz = {
             'name': 'Topaz & Numby',
             'eidolon': 0,
             'lightcone_name': 'Swordplay',
-            'superimposition': 1
+            'superimposition': 1,
+            'team': 'blue_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -310,7 +341,8 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
             'name': 'Sampo',
             'eidolon': 6,
             'lightcone_name': 'Good Night and Sleep Well',
-            'superimposition': 5
+            'superimposition': 5,
+            'team': 'red_team'
         }
         message = {
             'type': MessageType.PICK.value,
@@ -320,6 +352,8 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         game_state = res['game_state']
+        self.assertEquals(game_state['bans']['blue_team'], [arlan_ban, dhil_ban])
+        self.assertEquals(game_state['bans']['red_team'], [herta_ban, blade_ban])
         self.assertEqual(game_state['picks']['blue_team'], [bronya, yukong, fu_xuan, bailu, silver_wolf, kafka, clara, topaz])
         self.assertEqual(game_state['picks']['red_team'], [tingyun, pela, seele, luocha, huohuo, jingliu, asta, sampo])
         await communicator1.disconnect()

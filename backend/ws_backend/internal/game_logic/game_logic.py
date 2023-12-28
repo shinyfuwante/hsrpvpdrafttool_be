@@ -18,18 +18,21 @@ class Game:
             ]
         }
 
-    def update_state(self, character, pick_type):
+    def update_state(self, pick, pick_type):
+        if pick['team'] != self.state['turn_order'][self.turn_index][0]:
+            print("Error: not this team's turn")
+            return False
         if pick_type == 'ban':
             if self.state['turn_order'][self.turn_index][1] != 'ban':
                 print("Error: not ban phase")
                 return False
-            self.state['bans'][self.state['turn_order'][self.turn_index][0]].append(character)
+            self.state['bans'][self.state['turn_order'][self.turn_index][0]].append(pick)
             self.turn_index += 1
         else:
             if self.state['turn_order'][self.turn_index][1] != 'pick':
                 print("Error: not pick phase")
                 return False
-            self.state['picks'][self.state['turn_order'][self.turn_index][0]].append(character)
+            self.state['picks'][self.state['turn_order'][self.turn_index][0]].append(pick)
             self.turn_index += 1
         return True
 
@@ -38,6 +41,3 @@ class Game:
     
     def get_turn_index(self):
         return self.turn_index
-    
-    def get_current_turn_player(self):
-        return self.blue_team if self.state['turn_order'][self.turn_index][0] == "blue_team" else self.red_team 

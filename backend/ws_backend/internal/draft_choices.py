@@ -6,6 +6,7 @@ class Pick:
     eidolon: int = 0
     lightcone_name: str = ""
     superimposition: int = 1
+    team: str = "blue_team"
     
     
 @dataclass
