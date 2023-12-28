@@ -24,6 +24,7 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         cache.delete(self.game_id)
         
     async def test_multiple_clients_connect_and_init_game(self):
+        self.maxDiff = None
         # Create two WebSocket communicators that connect to the server
         communicator1 = WebsocketCommunicator(application, self.SERVER_URL)
         communicator2 = WebsocketCommunicator(application, self.SERVER_URL)
@@ -81,37 +82,61 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
         game_state_bans = res1['game_state'].get('bans')
         self.assertEqual('Herta' in game_state_bans['red_team'], True)
-        # blue team picks Bronya
+        # blue team picks Bronya E1S1 But the Battle Isn't Over
+        bronya = {
+            'name': 'Bronya',
+            'eidolon': 1,
+            'lightcone_name': 'But the Battle Isn\'t Over',
+            'superimposition': 1
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Bronya'
+            'pick': bronya
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
-        # red team picks Tingyun, Pela
+        # red team picks Tingyun E0S0, Pela E0S0
+        tingyun = {
+            'name': 'Tingyun',
+            'eidolon': 0,
+            'lightcone_name': '',
+            'superimposition': 0
+        }
+        pela = {
+            'name': 'Pela',
+            'eidolon': 0,
+            'lightcone_name': '',
+            'superimposition': 0
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Tingyun'
+            'pick': tingyun
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Pela'
+            'pick': pela
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         game_state = res['game_state']
-        self.assertEqual(game_state['picks']['blue_team'], ['Bronya'])
-        self.assertEqual(game_state['picks']['red_team'], ['Tingyun', 'Pela'])
-        # blue team picks Yukong
+        self.assertEqual(game_state['picks']['blue_team'], [bronya])
+        self.assertEqual(game_state['picks']['red_team'], [tingyun, pela])
+        # blue team picks Yukong E0S5 Memories of the Past
+        yukong = {
+            'name': 'Yukong',
+            'eidolon': 0,
+            'lightcone_name': 'Memories of the Past',
+            'superimposition': 5
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Yukong'
+            'pick': yukong
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
@@ -131,100 +156,171 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
-        # red team picks Seele
+        # red team picks Seele E0S1 In The Night
+        seele = {
+            'name': 'Seele',
+            'eidolon': 0,
+            'lightcone_name': 'In the Night',
+            'superimposition': 1
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Seele'
+            'pick': seele
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
-        # blue team picks Fu Xuan, Bailu
+        # blue team picks Fu Xuan E0S1 She Already Closed Her Eyes, Bailu E0S0
+        fu_xuan = {
+            'name': 'Fu Xuan',
+            'eidolon': 0,
+            'lightcone_name': 'She Already Closed Her Eyes',
+            'superimposition': 1
+        }
+        bailu = {
+            'name': 'Bailu',
+            'eidolon': 0,
+            'lightcone_name': '',
+            'superimposition': 0
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Fu Xuan'
+            'pick': fu_xuan
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Bailu'
+            'pick': bailu
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
         # red team picks Luocha, Huohuo
+        luocha = {
+            'name': 'Luocha',
+            'eidolon': 0,
+            'lightcone_name': '',
+            'superimposition': 0
+        }
+        huohuo = {
+            'name': 'Huohuo',
+            'eidolon': 0,
+            'lightcone_name': '',
+            'superimposition': 0
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Luocha'
+            'pick': luocha
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Huohuo'
+            'pick': huohuo
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
-        # blue team picks Silver Wolf, Kafka
+        # blue team picks Silver Wolf E0S5 Good Night and Sleep Well, Kafka E2S1 Patience is All You Need
+        silver_wolf = {
+            'name': 'Silver Wolf',
+            'eidolon': 0,
+            'lightcone_name': 'Good Night and Sleep Well',
+            'superimposition': 5
+        }
+        kafka = {
+            'name': 'Kafka',
+            'eidolon': 2,
+            'lightcone_name': 'Patience is All You Need',
+            'superimposition': 1
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Silver Wolf'
+            'pick': silver_wolf
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Kafka'
+            'pick': kafka
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
-        # red team picks Jingliu, Asta
+        # red team picks Jingliu E0S5 On the Fall of an Aeon, Asta E6S5 Meshing Cogs
+        jingliu = {
+            'name': 'Jingliu',
+            'eidolon': 0,
+            'lightcone_name': 'On the Fall of an Aeon',
+            'superimposition': 5
+        }
+        asta = {
+            'name': 'Asta',
+            'eidolon': 6,
+            'lightcone_name': 'Meshing Cogs',
+            'superimposition': 5
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Jingliu'
+            'pick': jingliu
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Asta'
+            'pick': asta
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
-        # blue team picks Clara, Topaz
+        # blue team picks Clara E0S1 Something Irreplaceable, Topaz E0S1 Swordplay
+        clara = {
+            'name': 'Clara',
+            'eidolon': 0,
+            'lightcone_name': 'Something Irreplaceable',
+            'superimposition': 1
+        }
+        topaz = {
+            'name': 'Topaz & Numby',
+            'eidolon': 0,
+            'lightcone_name': 'Swordplay',
+            'superimposition': 1
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Clara'
+            'pick': clara
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Topaz'
+            'pick': topaz
         }
         await selector.send_json_to(message)
         res = await selector.receive_json_from()
-        # red team picks Sampo
+        # red team picks Sampo E6S5 Good Night and Sleep Well
+        sampo = {
+            'name': 'Sampo',
+            'eidolon': 6,
+            'lightcone_name': 'Good Night and Sleep Well',
+            'superimposition': 5
+        }
         message = {
             'type': MessageType.PICK.value,
             'message_type': MessageType.PICK.value,
-            'pick': 'Sampo'
+            'pick': sampo
         }
         await waiter.send_json_to(message)
         res = await selector.receive_json_from()
         game_state = res['game_state']
-        self.assertEqual(game_state['picks']['blue_team'], ['Bronya', 'Yukong', 'Fu Xuan', 'Bailu', 'Silver Wolf', 'Kafka', 'Clara', 'Topaz'])
-        self.assertEqual(game_state['picks']['red_team'], ['Tingyun', 'Pela', 'Seele', 'Luocha', 'Huohuo', 'Jingliu', 'Asta', 'Sampo'])
-        
+        self.assertEqual(game_state['picks']['blue_team'], [bronya, yukong, fu_xuan, bailu, silver_wolf, kafka, clara, topaz])
+        self.assertEqual(game_state['picks']['red_team'], [tingyun, pela, seele, luocha, huohuo, jingliu, asta, sampo])
         await communicator1.disconnect()
         await communicator2.disconnect()
