@@ -113,7 +113,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         }
         await self.channel_layer.group_send(self.group_name, message)
     
-    def reset_game(self, event):
+    async def reset_game(self, event):
         print("Received reset game message")
         game = cache.get(f'{self.game_id}_game')
         game.reset_game()
@@ -126,9 +126,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': payload
         }
-        return message
+        await self.channel_layer.group_send(self.group_name, message)
     
-    def undo(self, event):
+    async def undo(self, event):
         print("Received undo message")
         game = cache.get(f'{self.game_id}_game')
         game.undo_turn()
@@ -141,7 +141,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': payload
         }
-        return message
+        await self.channel_layer.group_send(self.group_name, message)
     
     async def game_state(self, event):
         print('received game_state message')
