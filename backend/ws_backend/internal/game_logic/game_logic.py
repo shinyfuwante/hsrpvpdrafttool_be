@@ -38,3 +38,6 @@ class Game:
     
     def get_turn_index(self):
         return self.turn_index
+    
+    def get_current_turn_player(self):
+        return self.blue_team if self.state['turn_order'][self.turn_index][0] == "blue_team" else self.red_team 

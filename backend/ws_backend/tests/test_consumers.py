@@ -6,6 +6,7 @@ from django.core.cache import cache
 from ..internal.draft_choices import Ban, Pick
 import json
 import os
+import asyncio
 
 print(os.getcwd())
 with open('./ws_backend/internal/characters.json', 'r') as f:
@@ -79,11 +80,151 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         res1 = await selector.receive_json_from()
         self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
         game_state_bans = res1['game_state'].get('bans')
-        print(game_state_bans)
         self.assertEqual('Herta' in game_state_bans['red_team'], True)
-        # res1 = await selector.receive_json_from()
-        # self.assertEqual(res1['message_type'], MessageType.GAME_STATE.value)
-        # res2 = await waiter.receive_json_from()
-        # self.assertEqual(res2['message_type'], MessageType.GAME_STATE.value)
+        # blue team picks Bronya
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Bronya'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        # red team picks Tingyun, Pela
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Tingyun'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Pela'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        game_state = res['game_state']
+        self.assertEqual(game_state['picks']['blue_team'], ['Bronya'])
+        self.assertEqual(game_state['picks']['red_team'], ['Tingyun', 'Pela'])
+        # blue team picks Yukong
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Yukong'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        # red team bans Blade
+        message = {
+            'type': MessageType.BAN.value,
+            'message_type': MessageType.BAN.value,
+            'ban': 'Blade'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        # blue team bans Dan Heng Imbibitor Lunae
+        message = {
+            'type': MessageType.BAN.value,
+            'message_type': MessageType.BAN.value,
+            'ban': 'Dan Heng Imbibitor Lunae'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        # red team picks Seele
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Seele'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        # blue team picks Fu Xuan, Bailu
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Fu Xuan'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Bailu'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        # red team picks Luocha, Huohuo
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Luocha'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Huohuo'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        # blue team picks Silver Wolf, Kafka
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Silver Wolf'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Kafka'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        # red team picks Jingliu, Asta
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Jingliu'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Asta'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        # blue team picks Clara, Topaz
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Clara'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Topaz'
+        }
+        await selector.send_json_to(message)
+        res = await selector.receive_json_from()
+        # red team picks Sampo
+        message = {
+            'type': MessageType.PICK.value,
+            'message_type': MessageType.PICK.value,
+            'pick': 'Sampo'
+        }
+        await waiter.send_json_to(message)
+        res = await selector.receive_json_from()
+        game_state = res['game_state']
+        self.assertEqual(game_state['picks']['blue_team'], ['Bronya', 'Yukong', 'Fu Xuan', 'Bailu', 'Silver Wolf', 'Kafka', 'Clara', 'Topaz'])
+        self.assertEqual(game_state['picks']['red_team'], ['Tingyun', 'Pela', 'Seele', 'Luocha', 'Huohuo', 'Jingliu', 'Asta', 'Sampo'])
+        
         await communicator1.disconnect()
         await communicator2.disconnect()
