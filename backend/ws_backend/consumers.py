@@ -13,6 +13,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.rule_set = self.scope['subprotocols'][0] 
+        cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
         self.group_name = f'game_{self.game_id}'
             
         await self.channel_layer.group_add(
@@ -40,7 +42,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         cache.set(self.game_id, participants, self.cache_timeout)
         if len(participants) == 0:
             print("Deleting game from cache")
-            cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game'])
+            cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game', f'{self.game_id}_rule_set'])
         
     async def receive_json(self, content):
         message_type = content.get('type')
@@ -65,7 +67,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'message': {
                     'message_type': MessageType.GAME_READY.value,
                     'cid': self.channel_name,
-                    'selector': selector
+                    'selector': selector,
+                    'rule_set': cache.get(f'{self.game_id}_rule_set')
                 }
             }
             await self.send_json(message)
