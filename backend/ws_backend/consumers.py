@@ -58,9 +58,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             cache.set(f'{self.game_id}_selector', selector, self.cache_timeout)
             cache.set(f'{self.game_id}_waiter', waiter, self.cache_timeout)
             message = {
-                'message_type': MessageType.GAME_READY.value,
-                'cid': self.channel_name,
-                'selector': selector == self.channel_name
+                'type': MessageType.FRONT_END_MESSAGE.value,
+                'message': {
+                    'message_type': MessageType.GAME_READY.value,
+                    'cid': self.channel_name,
+                    'selector': selector == self.channel_name
+                }
             }
             await self.send_json(message)
     
