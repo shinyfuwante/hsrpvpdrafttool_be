@@ -60,7 +60,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             message = {
                 'message_type': MessageType.GAME_READY.value,
                 'cid': self.channel_name,
-                'selector': selector
+                'selector': selector == self.channel_name
             }
             await self.send_json(message)
     
