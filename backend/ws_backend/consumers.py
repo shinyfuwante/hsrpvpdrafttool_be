@@ -53,46 +53,23 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         print("Received game ready message")
         participants = cache.get(self.game_id)
         if participants and len(participants) == 2:
-            payload = {
-                'message_type': MessageType.GAME_READY.value
-            }
-            message = {
-                'type': MessageType.FRONT_END_MESSAGE.value,
-                'message': payload
-            }
-            await self.send_json(message)
-    async def init_game(self, event):
-        print("Received init game message")
-        participants = cache.get(self.game_id)
-        if participants and len(participants) == 2:
-            #coin flip to determine who picks side
             selector = random.choice(participants)
             waiter = participants[0] if participants[1] == selector else participants[1]
             cache.set(f'{self.game_id}_selector', selector, self.cache_timeout)
             cache.set(f'{self.game_id}_waiter', waiter, self.cache_timeout)
-            payload = {
-                'message_type': MessageType.SIDE_SELECT.value,
+            message = {
+                'message_type': MessageType.GAME_READY.value,
+                'cid': self.channel_name,
                 'selector': selector
             }
-            message = {
-                'type': MessageType.FRONT_END_MESSAGE.value,
-                'message': payload
-            }
-            logger.info(f"Sending message to channel {self.channel_name}: {message}")
-            await self.channel_layer.group_send(self.group_name, message)
-        else:
-            await self.channel_layer.group_send(self.group_name, {
-                'type': MessageType.FRONT_END_MESSAGE.value,
-                'message_type': 'error',
-                'message': 'error',
-            })
+            await self.send_json(message)
     
     async def side_select(self, event):
         print("Received side select message")
-        if event['side'] == 0:
+        if event['side'] == "blue":
             bluePlayer = cache.get(f'{self.game_id}_selector')
             redPlayer = cache.get(f'{self.game_id}_waiter')
-        elif event['side'] == 1:
+        elif event['side'] == "red":
             bluePlayer = cache.get(f'{self.game_id}_waiter')
             redPlayer = cache.get(f'{self.game_id}_selector') 
         else: 

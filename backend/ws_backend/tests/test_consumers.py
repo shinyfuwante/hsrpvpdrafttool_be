@@ -35,23 +35,15 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         assert connected1
         assert connected2
         res1 = await communicator1.receive_json_from()
+        communicator1_cid = res1['cid']
         res2 = await communicator2.receive_json_from()
-        # creator will send an init message to the server
-        message = {
-            'type': MessageType.INIT_GAME.value,
-            'message_type': MessageType.INIT_GAME.value,
-        }
-        await communicator1.send_json_to(message)
-        res1 = await communicator1.receive_json_from()
-        res2 = await communicator2.receive_json_from()
-        self.assertEqual(res1['message_type'], MessageType.SIDE_SELECT.value or MessageType.SIDE_SELECT_WAITER.value)
-        self.assertEqual(res2['message_type'], MessageType.SIDE_SELECT.value or MessageType.SIDE_SELECT_WAITER.value)
-        selector = communicator1 if res1['message_type'] == MessageType.SIDE_SELECT.value else communicator2
-        waiter = communicator1 if res1['message_type'] == MessageType.SIDE_SELECT_WAITER.value else communicator2
+        communicator2_cid = res2['cid']
+        selector = communicator1 if res1['selector'] == communicator1_cid else communicator2
+        waiter = communicator1 if res1['selector'] != communicator1_cid else communicator2
         
         side_select_message = ({
             'type': MessageType.SIDE_SELECT.value,
-            'side': 0 if selector == communicator1 else 1
+            'side': "blue" if selector == communicator1 else "red"
         })
         await selector.send_json_to(side_select_message)
         # when the selector selects their side, the game should finish initializing and the selector will be placed on their side
