@@ -38,8 +38,8 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         communicator1_cid = res1['cid']
         res2 = await communicator2.receive_json_from()
         communicator2_cid = res2['cid']
-        selector = communicator1 if res1['selector'] else communicator2
-        waiter = communicator1 if not res1['selector'] else communicator2
+        selector = communicator1 if res1['selector'] == communicator1_cid else communicator2
+        waiter = communicator1 if not res1['selector'] == communicator1_cid else communicator2
         
         side_select_message = ({
             'type': MessageType.SIDE_SELECT.value,

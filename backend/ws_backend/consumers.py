@@ -38,6 +38,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         participants = cache.get(self.game_id, [])
         participants.remove(self.channel_name)
         cache.set(self.game_id, participants, self.cache_timeout)
+        if len(participants) == 0:
+            print("Deleting game from cache")
+            cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game'])
         
     async def receive_json(self, content):
         message_type = content.get('type')
@@ -62,7 +65,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'message': {
                     'message_type': MessageType.GAME_READY.value,
                     'cid': self.channel_name,
-                    'selector': selector == self.channel_name
+                    'selector': selector
                 }
             }
             await self.send_json(message)
@@ -153,5 +156,5 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     
     async def front_end_message(self, event):
         print("received front_end_message")
-        await self.send_json(event['message'])
+        await self.send_json(event)
         
