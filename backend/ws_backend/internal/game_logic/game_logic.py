@@ -39,8 +39,8 @@ class Game:
     def get_state(self):
         return self.state
     
-    def get_turn_index(self):
-        return self.turn_index
+    def get_turn_player(self):
+        return self.state['turn_order'][self.turn_index][0]
     
     def reset_game(self):
         self.state = {

@@ -91,7 +91,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_START.value,
-            'game_state': game.get_state()
+            'game_state': game.get_state(),
+            'turn_player': game.get_turn_player()
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -106,7 +107,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_STATE.value,
-            'game_state': game.get_state()
+            'game_state': game.get_state(),
+            'turn_player': game.get_turn_player()
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -121,7 +123,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_STATE.value,
-            'game_state': game.get_state()
+            'game_state': game.get_state(),
+            'turn_player': game.get_turn_player()
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -141,7 +144,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
-            'success': res
+            'success': res,
+            'turn_player': game.get_turn_player()
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.GAME_STATE.value, 'message': payload })
     
@@ -153,7 +157,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
-            'success': res
+            'success': res,
+            'turn_player': game.get_turn_player()
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.GAME_STATE.value, 'message': payload })
     
