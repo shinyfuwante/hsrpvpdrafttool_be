@@ -6,6 +6,7 @@ import random
 from django.core.cache import cache
 import json
 import logging
+from urllib.parse import parse_qs
 logger = logging.getLogger(__name__)
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
@@ -13,8 +14,14 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        self.rule_set = self.scope['subprotocols'][0] 
-        cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
+        query_string = parse_qs(self.scope['query_string'].decode('utf8'))
+        print(query_string)
+        if cache.get(f'{self.game_id}_rule_set'):
+            self.rule_set = cache.get(f'{self.game_id}_rule_set')
+        else:
+            self.rule_set = query_string.get('ruleSet', ['phd_standard'])[0]
+            print(self.rule_set)
+            cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
         self.group_name = f'game_{self.game_id}'
             
         await self.channel_layer.group_add(
@@ -92,7 +99,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         payload = {
             'message_type': MessageType.GAME_START.value,
             'game_state': game.get_state(),
-            'turn_player': game.get_turn_player()
+            'turn_player': game.get_turn_player(),
+            'blue_team': bluePlayer,
+            'red_team': redPlayer
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
