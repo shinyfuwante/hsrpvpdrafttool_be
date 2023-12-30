@@ -30,7 +30,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         self.group_name = f'game_{self.game_id}'
         
         # Load the JSON files from the rule_set directory
-        rule_set_dir = os.path.join('internal', 'rule_sets', self.rule_set)
+        rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
         characters = await self.load_json(rule_set_dir, 'characters.json')
         light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
         cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
