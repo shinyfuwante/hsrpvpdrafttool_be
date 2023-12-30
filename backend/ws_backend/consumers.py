@@ -65,10 +65,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         print("Received game ready message")
         participants = cache.get(self.game_id)
         if participants and len(participants) == 2:
-            selector = random.choice(participants)
-            waiter = participants[0] if participants[1] == selector else participants[1]
-            cache.set(f'{self.game_id}_selector', selector, self.cache_timeout)
-            cache.set(f'{self.game_id}_waiter', waiter, self.cache_timeout)
+            if not cache.get(f'{self.game_id}_selector'):
+                selector = random.choice(participants)
+                waiter = participants[0] if participants[1] == selector else participants[1]
+                cache.set(f'{self.game_id}_selector', selector, self.cache_timeout)
+                cache.set(f'{self.game_id}_waiter', waiter, self.cache_timeout)
+            selector = cache.get(f'{self.game_id}_selector')
             message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
