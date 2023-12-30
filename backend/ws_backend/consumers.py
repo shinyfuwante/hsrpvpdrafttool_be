@@ -7,10 +7,15 @@ from django.core.cache import cache
 import json
 import logging
 from urllib.parse import parse_qs
+import os
 logger = logging.getLogger(__name__)
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
     cache_timeout = 10800 # 3 hours
+    async def load_json(self, directory, filename):
+        with open(os.path.join(directory, filename)) as f:
+            return json.load(f)
+        
     async def connect(self):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
@@ -23,6 +28,13 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
         self.group_name = f'game_{self.game_id}'
+        
+        # Load the JSON files from the rule_set directory
+        rule_set_dir = os.path.join('internal', 'rule_sets', self.rule_set)
+        characters = await self.load_json(rule_set_dir, 'characters.json')
+        light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
+        cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
+        cache.set(f'{self.game_id}_light_cones', light_cones, self.cache_timeout)
             
         await self.channel_layer.group_add(
             self.group_name,
@@ -77,7 +89,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                     'message_type': MessageType.GAME_READY.value,
                     'cid': self.channel_name,
                     'selector': selector,
-                    'rule_set': cache.get(f'{self.game_id}_rule_set')
+                    'rule_set': cache.get(f'{self.game_id}_rule_set'),
+                    'characters': cache.get(f'{self.game_id}_characters'),
+                    'light_cones': cache.get(f'{self.game_id}_light_cones')
                 }
             }
             await self.send_json(message)

@@ -1,0 +1,574 @@
+{
+    "March 7th": {
+        "id": "1001",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Dan Heng": {
+        "id": "1002",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Himeko": {
+        "id": "1003",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Welt": {
+        "id": "1004",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Kafka": {
+        "id": "1005",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Silver Wolf": {
+        "id": "1006",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Arlan": {
+        "id": "1008",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Asta": {
+        "id": "1009",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Herta": {
+        "id": "1013",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Bronya": {
+        "id": "1101",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Seele": {
+        "id": "1102",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Serval": {
+        "id": "1103",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Gepard": {
+        "id": "1104",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Natasha": {
+        "id": "1105",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Pela": {
+        "id": "1106",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Clara": {
+        "id": "1107",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Sampo": {
+        "id": "1108",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Hook": {
+        "id": "1109",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Lynx": {
+        "id": "1110",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Luka": {
+        "id": "1111",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Topaz & Numby": {
+        "id": "1112",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Qingque": {
+        "id": "1201",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Tingyun": {
+        "id": "1202",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Luocha": {
+        "id": "1203",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Jing Yuan": {
+        "id": "1204",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Blade": {
+        "id": "1205",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Sushang": {
+        "id": "1206",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Yukong": {
+        "id": "1207",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Fu Xuan": {
+        "id": "1208",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Yanqing": {
+        "id": "1209",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Guinaifen": {
+        "id": "1210",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Bailu": {
+        "id": "1211",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Jingliu": {
+        "id": "1212",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Dan Heng Imbibitor Lunae": {
+        "id": "1213",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Xueyi": {
+        "id": "1214",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Hanya": {
+        "id": "1215",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 4
+    },
+    "Huohuo": {
+        "id": "1217",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Argenti": {
+        "id": "1302",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Ruan Mei": {
+        "id": "1303",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Dr. Ratio": {
+        "id": "1305",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "{NICKNAME}": {
+        "id": "8001",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "TrailBlazerPhysical": {
+        "id": "8001",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "TrailBlazerFire": {
+        "id": "8001",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    },
+    "Dan Heng \u2022 Imbibitor Lunae": {
+        "id": "1213",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "rarity": 5
+    }
+}
