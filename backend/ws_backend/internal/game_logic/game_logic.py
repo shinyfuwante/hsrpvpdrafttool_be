@@ -26,13 +26,13 @@ class Game:
             if self.state['turn_order'][self.turn_index][1] != 'ban':
                 print("Error: not ban phase")
                 return False
-            self.state['bans'][self.state['turn_order'][self.turn_index][0]].append(pick)
+            self.state['bans'][self.state['turn_order'][self.turn_index][0]].append(pick['character'])
             self.turn_index += 1
         else:
             if self.state['turn_order'][self.turn_index][1] != 'pick':
                 print("Error: not pick phase")
                 return False
-            self.state['picks'][self.state['turn_order'][self.turn_index][0]].append(pick)
+            self.state['picks'][self.state['turn_order'][self.turn_index][0]].append(pick['character'])
             self.turn_index += 1
         return True
 
