@@ -170,7 +170,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
             'success': res,
-            'turn_player': game.get_turn_player()
+            'turn_player': game.get_turn_player(),
+            'turn_index': game.turn_index
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
     
@@ -183,7 +184,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
             'success': res,
-            'turn_player': game.get_turn_player()
+            'turn_player': game.get_turn_player(),
+            'turn_index': game.turn_index
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
     
