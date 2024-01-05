@@ -178,7 +178,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def draft_pick(self, event):
         print('received pick message')
         game = cache.get(f'{self.game_id}_game')
-        res = game.update_state(event['pick'], 'pick')
+        res = game.update_state(event, 'pick')
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_STATE.value,
