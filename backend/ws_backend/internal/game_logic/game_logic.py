@@ -35,7 +35,14 @@ class Game:
             self.state['picks'][self.state['turn_order'][self.turn_index][0]].append(pick['character'])
             self.turn_index += 1
         return True
-
+    
+    def sig_eid_change(self, character):
+        print(character)
+        char = character['character']
+        team = character['team']
+        self.state['picks'][team][char['index']] = char
+        return 
+    
     def get_state(self):
         return self.state
     

@@ -3,10 +3,11 @@ from dataclasses import dataclass
 @dataclass
 class Pick:
     name: str
-    eidolon: int = 0
-    lightcone_name: str = ""
-    superimposition: int = 1
-    team: str = "blue_team"
+    eidolon: int
+    light_cone: str
+    superimposition: int
+    index: int
+    
     
     
 @dataclass

@@ -1,7 +1,6 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from .internal.game_logic.game_logic import Game
 from .internal.enums import MessageType
-from .internal.draft_choices import Pick
 import random
 from django.core.cache import cache
 import json
@@ -133,7 +132,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
-            'turn_player': game.get_turn_player()
+            'turn_player': game.get_turn_player(),
+            'turn_index': game.turn_index
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -149,7 +149,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
-            'turn_player': game.get_turn_player()
+            'turn_player': game.get_turn_player(),
+            'turn_index': game.turn_index
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -189,6 +190,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
     
+    async def sig_eid_change(self, event):
+        print('received sig_eid_change message')
+        game = cache.get(f'{self.game_id}_game')
+        game.sig_eid_change(event)
+        cache.set(f'{self.game_id}_game', game, self.cache_timeout)
+        payload = {
+            'message_type': MessageType.GAME_STATE.value,
+            'game_state': game.get_state(),
+            'turn_player': game.get_turn_player(),
+            'turn_index': game.turn_index
+        }
+        await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
+        
     async def front_end_message(self, event):
         print("received front_end_message")
         await self.send_json(event)
