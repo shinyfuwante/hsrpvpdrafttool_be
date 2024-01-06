@@ -41,11 +41,12 @@ class Game:
         new_char = character['character']
         team = character['team']
         for team in self.state['picks']:
-            for char in self.state['picks'][team]:
+            for i, char in enumerate(self.state['picks'][team]):
                 if char['name'] == new_char['name']:
-                    char = new_char
-                    return
-        return 
+                    print("found match")
+                    self.state['picks'][team][i] = new_char
+                    return 
+        return
     
     def get_state(self):
         return self.state
