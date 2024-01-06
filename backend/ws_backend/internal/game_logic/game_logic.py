@@ -38,9 +38,13 @@ class Game:
     
     def sig_eid_change(self, character):
         print(character)
-        char = character['character']
+        new_char = character['character']
         team = character['team']
-        self.state['picks'][team][char['index']] = char
+        for team in self.state['picks']:
+            for char in self.state['picks'][team]:
+                if char['name'] == new_char['name']:
+                    char = new_char
+                    return
         return 
     
     def get_state(self):
