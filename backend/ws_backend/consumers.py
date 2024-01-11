@@ -26,6 +26,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             self.rule_set = query_string.get('ruleSet', ['phd_standard'])[0]
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
+        cid = query_string.get('cid')[0]
+        # state = cache.get(f'{self.game_id}_{cid}')
         self.group_name = f'game_{self.game_id}'
         
         # Load the JSON files from the rule_set directory
