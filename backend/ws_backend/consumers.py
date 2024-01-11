@@ -27,10 +27,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
         cid = query_string.get('cid')[0]
-        # state = cache.get(f'{self.game_id}_{cid}')
-        self.group_name = f'game_{self.game_id}'
+        state = cache.get(f'{self.game_id}_{cid}')
+        # if state: 
+        #     # there is an existing game
+        #     game = cache.get(f'game_{self.game_id}')
+        #     # return game_state
+        # else: 
+        #     rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
+        #     characters = await self.load_json(rule_set_dir, 'characters.json')
+        #     light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
+        #     cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
+        #     cache.set(f'{self.game_id}_light_cones', light_cones, self.cache_timeout)
         
-        # Load the JSON files from the rule_set directory
+        self.group_name = f'game_{self.game_id}'
         rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
         characters = await self.load_json(rule_set_dir, 'characters.json')
         light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
@@ -44,12 +53,13 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
         # Add the channel_name to the list of participants in the cache
         participants = cache.get(self.game_id, [])
-        participants.append(self.channel_name)
-        cache.set(self.game_id, participants, self.cache_timeout)
-        if participants and len(participants) == 2:
-            await self.channel_layer.group_send(self.group_name, {
-                'type': MessageType.GAME_READY.value,
-            })
+        if len(participants) < 2: 
+            participants.append(self.channel_name)
+            cache.set(self.game_id, participants, self.cache_timeout)
+            if participants and len(participants) == 2:
+                await self.channel_layer.group_send(self.group_name, {
+                    'type': MessageType.GAME_READY.value,
+                })
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
