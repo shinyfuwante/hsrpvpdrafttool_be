@@ -19,6 +19,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         participants = cache.get(f'{self.game_id}_cids', [])
+        self.group_name = f'game_{self.game_id}'
         connections = cache.get(f'{self.game_id}_connections', [])
         query_string = parse_qs(self.scope['query_string'].decode('utf8'))
         print(query_string)
@@ -29,21 +30,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
         self.cid = query_string.get('cid')[0]
-        state = cache.get(f'{self.game_id}_{self.cid}')
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
         )
         await self.accept()
-        connections.append(self.channel_name)
-        cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
-        if state: 
-            # there is an existing game
-            game = cache.get(f'game_{self.game_id}')
+        if self.cid in participants: 
             # return game_state to connecting client
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.RECONNECT.value,
             })
+            connections.append(self.channel_name)
+            cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
+            return
         else: 
             rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
             characters = await self.load_json(rule_set_dir, 'characters.json')
@@ -51,7 +50,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
             cache.set(f'{self.game_id}_light_cones', light_cones, self.cache_timeout)
             
-        # Add the channel_name to the list of participants in the cache
+        # Add the channel_name to the list of connectinos in the cache
+        connections.append(self.channel_name)
+        cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
         if len(participants) < 2: 
             participants.append(self.cid)
             cache.set(f'{self.game_id}_cids', participants, self.cache_timeout)
@@ -114,7 +115,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
                     'message_type': MessageType.GAME_READY.value,
-                    'cid': self.channel_name,
+                    'cid': self.cid,
                     'selector': selector,
                     'rule_set': cache.get(f'{self.game_id}_rule_set'),
                     'characters': cache.get(f'{self.game_id}_characters'),
