@@ -12,3 +12,4 @@ class MessageType(Enum):
     PICK = "draft_pick"
     UNDO = "undo"
     RESET_GAME = "reset_game"
+    RECONNECT = "reconnect"

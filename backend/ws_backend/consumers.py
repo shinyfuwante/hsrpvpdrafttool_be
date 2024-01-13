@@ -18,6 +18,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         # Called when the WebSocket is handshaking
         self.game_id = self.scope['url_route']['kwargs']['game_id']
+        participants = cache.get(f'{self.game_id}_cids', [])
+        connections = cache.get(f'{self.game_id}_connections', [])
         query_string = parse_qs(self.scope['query_string'].decode('utf8'))
         print(query_string)
         if cache.get(f'{self.game_id}_rule_set'):
@@ -26,54 +28,68 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             self.rule_set = query_string.get('ruleSet', ['phd_standard'])[0]
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
-        cid = query_string.get('cid')[0]
-        state = cache.get(f'{self.game_id}_{cid}')
-        # if state: 
-        #     # there is an existing game
-        #     game = cache.get(f'game_{self.game_id}')
-        #     # return game_state
-        # else: 
-        #     rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
-        #     characters = await self.load_json(rule_set_dir, 'characters.json')
-        #     light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
-        #     cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
-        #     cache.set(f'{self.game_id}_light_cones', light_cones, self.cache_timeout)
-        
-        self.group_name = f'game_{self.game_id}'
-        rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
-        characters = await self.load_json(rule_set_dir, 'characters.json')
-        light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
-        cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
-        cache.set(f'{self.game_id}_light_cones', light_cones, self.cache_timeout)
-            
+        self.cid = query_string.get('cid')[0]
+        state = cache.get(f'{self.game_id}_{self.cid}')
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
         )
         await self.accept()
+        connections.append(self.channel_name)
+        cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
+        if state: 
+            # there is an existing game
+            game = cache.get(f'game_{self.game_id}')
+            # return game_state to connecting client
+            await self.channel_layer.group_send(self.group_name, {
+                'type': MessageType.RECONNECT.value,
+            })
+        else: 
+            rule_set_dir = os.path.join('ws_backend', 'internal', 'rule_sets', self.rule_set)
+            characters = await self.load_json(rule_set_dir, 'characters.json')
+            light_cones = await self.load_json(rule_set_dir, 'light_cones.json')
+            cache.set(f'{self.game_id}_characters', characters, self.cache_timeout)
+            cache.set(f'{self.game_id}_light_cones', light_cones, self.cache_timeout)
+            
         # Add the channel_name to the list of participants in the cache
-        participants = cache.get(self.game_id, [])
         if len(participants) < 2: 
-            participants.append(self.channel_name)
-            cache.set(self.game_id, participants, self.cache_timeout)
-            if participants and len(participants) == 2:
-                await self.channel_layer.group_send(self.group_name, {
-                    'type': MessageType.GAME_READY.value,
-                })
+            participants.append(self.cid)
+            cache.set(f'{self.game_id}_cids', participants, self.cache_timeout)
+        if len(participants) == 2:
+            await self.channel_layer.group_send(self.group_name, {
+                'type': MessageType.GAME_READY.value,
+            })
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
         )
-        # Remove the channel_name from the list of participants in the cache
-        participants = cache.get(self.game_id, [])
-        participants.remove(self.channel_name)
-        cache.set(self.game_id, participants, self.cache_timeout)
-        if len(participants) == 0:
+        connections = cache.get(f'{self.game_id}_connections')
+        connections.remove(self.channel_name)
+        cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
+        if len(connections) == 0:
             print("Deleting game from cache")
-            cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game', f'{self.game_id}_rule_set'])
-        
+            cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game', f'{self.game_id}_rule_set', f'{self.game_id}_characters', f'{self.game_id}_light_cones', f'{self.game_id}_connections', f'{self.game_id}_cids'])
+        elif len(connections) == 1:
+            print("Waiting for reconnection")
+            # TODO send a message to participants to indicate waiting for opponent to reconnect
+            
+    async def reconnect(self, event):
+        print("Received reconnect message")
+        game = cache.get(f'{self.game_id}_game')
+        payload = {
+            'message_type': MessageType.GAME_STATE.value,
+            'game_state': game.get_state(),
+            'turn_player': game.get_turn_player(),
+            'turn_index': game.turn_index,
+            'team': 'blue_team' if game.blue_team == self.cid else 'red_team'
+        }
+        message = {
+                'type': MessageType.FRONT_END_MESSAGE.value,
+                'message': payload
+        }
+        await self.send_json(message)
     async def receive_json(self, content):
         message_type = content.get('type')
 
@@ -86,7 +102,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         
     async def game_ready(self, event):
         print("Received game ready message")
-        participants = cache.get(self.game_id)
+        participants = cache.get(f'{self.game_id}_cids')
         if participants and len(participants) == 2:
             if not cache.get(f'{self.game_id}_selector'):
                 selector = random.choice(participants)
