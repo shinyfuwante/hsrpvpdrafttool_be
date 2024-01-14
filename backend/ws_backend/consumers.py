@@ -38,10 +38,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
                     'message_type': MessageType.ERROR.value,
-                    'message': 'Cannot connect on same connection. Please invite a friend to join.',
+                    'error': 'Cannot connect on same connection. Please invite a friend to join.',
                 },
             })
-            pass
+            return
         else: #it's a homie and game has started
             await self.channel_layer.group_add(
                 self.group_name,
@@ -87,7 +87,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game', f'{self.game_id}_rule_set', f'{self.game_id}_characters', f'{self.game_id}_light_cones', f'{self.game_id}_connections', f'{self.game_id}_cids'])
         elif len(connections) == 1:
             print("Waiting for reconnection")
-            await self.group_send(self.group_name, {
+            await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
                     'message_type': MessageType.ERROR.value,
