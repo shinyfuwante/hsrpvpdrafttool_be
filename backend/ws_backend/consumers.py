@@ -42,6 +42,15 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 },
             })
             return
+        elif self.cid not in participants and len(participants) == 2: # they are trying to connect to a full game   
+            # send message saying game is full
+            await self.channel_layer.group_send(self.group_name, {
+                'type': MessageType.FRONT_END_MESSAGE.value,
+                'message': {
+                    'message_type': MessageType.ERROR.value,
+                    'error': 'Game is full.',
+                },
+            })
         else: #it's a homie and game has started
             await self.channel_layer.group_add(
                 self.group_name,
@@ -90,7 +99,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
-                    'message_type': MessageType.ERROR.value,
+                    'message_type': MessageType.RECONNECT.value,
                     'message': 'Waiting for opponent to reconnect.',
                 },
             })
