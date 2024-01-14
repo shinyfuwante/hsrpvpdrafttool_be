@@ -14,3 +14,8 @@ class MessageType(Enum):
     RESET_GAME = "reset_game"
     RECONNECT = "reconnect"
     ERROR = "error"
+    
+class ErrorType(Enum):
+    FULL_GAME = "full_game"
+    SAME_CONNECTION = "same_connection"
+    

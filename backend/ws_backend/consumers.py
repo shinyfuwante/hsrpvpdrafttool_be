@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from .internal.game_logic.game_logic import Game
-from .internal.enums import MessageType
+from .internal.enums import MessageType, ErrorType
 import random
 from django.core.cache import cache
 import json
@@ -38,6 +38,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
                     'message_type': MessageType.ERROR.value,
+                    'error_type': ErrorType.SAME_CONNECTION.value,
                     'error': 'Cannot connect on same connection. Please invite a friend to join.',
                 },
             })
@@ -48,6 +49,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
                     'message_type': MessageType.ERROR.value,
+                    'error_type': ErrorType.FULL_GAME.value,
                     'error': 'Game is full.',
                 },
             })
