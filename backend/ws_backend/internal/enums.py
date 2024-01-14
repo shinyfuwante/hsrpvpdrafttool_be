@@ -13,3 +13,4 @@ class MessageType(Enum):
     UNDO = "undo"
     RESET_GAME = "reset_game"
     RECONNECT = "reconnect"
+    ERROR = "error"
