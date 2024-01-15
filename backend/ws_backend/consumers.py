@@ -42,6 +42,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                     'error': 'Cannot connect on same connection. Please invite a friend to join.',
                 },
             })
+            self.cid = "error"
             return
         elif self.cid not in participants and len(participants) == 2: # they are trying to connect to a full game   
             # send message saying game is full
@@ -77,6 +78,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         connections.append(self.cid)
         cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
         if len(participants) < 2: 
+            print("adding participant, now there are", len(participants) + 1, "participants")
             participants.append(self.cid)
             cache.set(f'{self.game_id}_cids', participants, self.cache_timeout)
         if len(participants) == 2:
@@ -91,12 +93,14 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name
         )
         connections = cache.get(f'{self.game_id}_connections')
-        connections.remove(self.cid)
-        cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
+        if self.cid in connections:
+            connections.remove(self.cid)
+            cache.set(f'{self.game_id}_connections', connections, self.cache_timeout)
+        participants = cache.get(f'{self.game_id}_cids')
         if len(connections) == 0:
             print("Deleting game from cache")
             cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game', f'{self.game_id}_rule_set', f'{self.game_id}_characters', f'{self.game_id}_light_cones', f'{self.game_id}_connections', f'{self.game_id}_cids'])
-        elif len(connections) == 1:
+        elif len(connections) == 1 and len(participants) == 2:
             print("Waiting for reconnection")
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -109,6 +113,11 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def reconnect(self, event):
         print("Received reconnect message")
         game = cache.get(f'{self.game_id}_game')
+        if not game:
+            await self.channel_layer.group_send(self.group_name, {
+                'type': MessageType.GAME_READY.value,
+            })
+            return
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
