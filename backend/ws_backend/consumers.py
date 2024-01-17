@@ -32,7 +32,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
             
         self.cid = query_string.get('cid')[0]
-        if self.cid in connections: # they are trying to connect on same connection
+        if connections and self.cid in connections: # they are trying to connect on same connection
             # send message saying they need to invite a friend
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.FRONT_END_MESSAGE.value,
