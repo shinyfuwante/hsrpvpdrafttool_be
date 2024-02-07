@@ -911,5 +911,115 @@
             5
         ],
         "rarity": 5
+    },
+    "What Is Real?": {
+        "id": "21035",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "Dreamville Adventure": {
+        "id": "21036",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "Final Victor": {
+        "id": "21037",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "Flames Afar": {
+        "id": "21038",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "Destiny's Threads Forewoven": {
+        "id": "21039",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "The Day The Cosmos Fell": {
+        "id": "21040",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "It's Showtime": {
+        "id": "21041",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "Indelible Promise": {
+        "id": "21042",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 4
+    },
+    "Earthly Escapade": {
+        "id": "23021",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 5
+    },
+    "Reforged Remembrance": {
+        "id": "23022",
+        "point_costs": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "rarity": 5
     }
 }
