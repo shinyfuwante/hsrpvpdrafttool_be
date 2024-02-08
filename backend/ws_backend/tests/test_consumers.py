@@ -8,26 +8,19 @@ import json
 import os
 import asyncio
 
-print(os.getcwd())
-with open('./ws_backend/internal/characters.json', 'r') as f:
-    characters = json.load(f)
-    
-
-with open('./ws_backend/internal/light_cones.json', 'r') as f:
-    light_cones = json.load(f)
-
 class GameConsumerTests(ChannelsLiveServerTestCase):
-    SERVER_URL = "ws/game/72e111a7-4c01-43bc-90eb-04b274949dfa"
+    SERVER_URL = "ws/game/72e111a7-4c01-43bc-90eb-04b274949dfa?ruleSet=phd_standard&cid=12345"
+    SERVER_URL_2 = "ws/game/72e111a7-4c01-43bc-90eb-04b274949dfa?ruleSet=phd_standard&cid=67890"
     game_id = "72e111a7-4c01-43bc-90eb-04b274949dfa"
     
     def tearDown(self):
-        cache.delete(self.game_id)
-        
+        cache.delete_many([f'{self.game_id}_selector', f'{self.game_id}_waiter', f'{self.game_id}_game', f'{self.game_id}_rule_set', f'{self.game_id}_characters', f'{self.game_id}_light_cones', f'{self.game_id}_connections', f'{self.game_id}_cids'])
+                
     async def test_multiple_clients_connect_and_init_game(self):
         self.maxDiff = None
         # Create two WebSocket communicators that connect to the server
         communicator1 = WebsocketCommunicator(application, self.SERVER_URL)
-        communicator2 = WebsocketCommunicator(application, self.SERVER_URL)
+        communicator2 = WebsocketCommunicator(application, self.SERVER_URL_2)
 
         connected1, _ = await communicator1.connect()
         connected2, _ = await communicator2.connect()
@@ -35,6 +28,7 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         assert connected1
         assert connected2
         res1 = await communicator1.receive_json_from()
+        print(res1)
         communicator1_cid = res1['cid']
         res2 = await communicator2.receive_json_from()
         communicator2_cid = res2['cid']

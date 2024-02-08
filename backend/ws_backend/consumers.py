@@ -23,7 +23,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         connections = cache.get(f'{self.game_id}_connections', [])
         query_string = parse_qs(self.scope['query_string'].decode('utf8'))
         print(query_string)
-        
         if cache.get(f'{self.game_id}_rule_set'):
             self.rule_set = cache.get(f'{self.game_id}_rule_set')
         else:
@@ -32,8 +31,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
             
         self.cid = query_string.get('cid')[0]
+        print('set cid to', self.cid)
         if connections and self.cid in connections: # they are trying to connect on same connection
             # send message saying they need to invite a friend
+            print('Cannot connect on same connection')
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
@@ -46,6 +47,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             return
         elif self.cid not in participants and len(participants) == 2: # they are trying to connect to a full game   
             # send message saying game is full
+            print('Game is full')
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.FRONT_END_MESSAGE.value,
                 'message': {
@@ -55,6 +57,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 },
             })
         else: #it's a homie and game has started
+            print('Adding to group')
             await self.channel_layer.group_add(
                 self.group_name,
                 self.channel_name
