@@ -154,6 +154,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                     'message_type': MessageType.GAME_READY.value,
                     'cid': self.cid,
                     'selector': selector,
+                    'rule_set': self.rule_set
                 }
             }
             await self.send_json(message)
