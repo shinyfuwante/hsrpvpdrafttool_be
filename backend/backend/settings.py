@@ -128,7 +128,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-redis_uri = f'redis://{os.getenv("REDISUSER")}:{os.getenv("REDIS_PASSORD")}@{os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}'
+redis_uri = f'redis://{os.getenv("REDISUSER")}:{os.getenv("REDIS_PASSWORD")}@{os.getenv("REDISHOST")}:{os.getenv("REDISPORT")}'
 # Daphne
 ASGI_APPLICATION = "backend.asgi.application"
 CHANNEL_LAYERS = {
