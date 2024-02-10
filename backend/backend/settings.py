@@ -128,13 +128,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+redis_uri = f'redis://{os.getenv("REDISUSER")}:{os.getenv("REDIS_PASSORD")}@{os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}'
 # Daphne
 ASGI_APPLICATION = "backend.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379, os.getenv('REDISPASSWORD'))],
+            "hosts": [(redis_uri)],
         },
     },
 }
@@ -142,7 +143,7 @@ CHANNEL_LAYERS = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/1',
+        'LOCATION': redis_uri,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
