@@ -477,19 +477,14 @@ class GameConsumerTests(ChannelsLiveServerTestCase):
         res = await communicator2.receive_json_from()
         self.assertEqual(res['message']['message_type'], MessageType.GAME_STATE.value)
         
-        # # try disconnecting client
-        # await communicator2.disconnect()
-        # await asyncio.sleep(2)
-        
-        # print("trying to get reconnect message")
-        # res = await communicator1.receive_json_from()
-        # assert res['message']['message_type'] == MessageType.RECONNECT.value
-        
-        # print("got reconnection message")
-        
-        # #reconnect
-        # communicator2 = WebsocketCommunicator(application, self.SERVER_URL_2)
-        # await communicator2.connect()
-        # res = await communicator1.receive_json_from()
-        # self.assertEqual(res['message']['message_type'], MessageType.GAME_STATE.value)
+        # disconnect communicator 2 and reconnect continuously until the team is not red_team
+        # for _ in range(60):
+        #     await communicator2.disconnect()
+        #     await asyncio.sleep(1)
+        #     communicator2 = WebsocketCommunicator(application, self.SERVER_URL_2)
+        #     await communicator2.connect()
+        #     res = await communicator2.receive_json_from()
+        #     self.assertEqual(res['message']['message_type'], MessageType.GAME_STATE.value)
+        #     self.assertEqual(res['message']['team'], "red_team")
+            
         
