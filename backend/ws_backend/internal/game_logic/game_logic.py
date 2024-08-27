@@ -79,3 +79,9 @@ class Game:
         else:
             self.state['picks'][self.state['turn_order'][self.turn_index][0]].pop()
         return True
+    
+    def get_blue(self):
+        return self.blue_team
+    
+    def get_red(self):
+        return self.red_team

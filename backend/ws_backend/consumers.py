@@ -116,12 +116,20 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 'type': MessageType.GAME_READY.value,
             })
             return
+        bluePlayer = game.get_blue()
+        redPlayer = game.get_red()
+        blueName = cache.get(f'{self.game_id}_{bluePlayer}')['team_name']
+        redName = cache.get(f'{self.game_id}_{redPlayer}')['team_name']
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
             'turn_player': game.get_turn_player(),
             'turn_index': game.turn_index,
-            'team': 'blue_team' if game.blue_team == self.cid else 'red_team'
+            'team': 'blue_team' if game.blue_team == self.cid else 'red_team',
+            'blue_team': bluePlayer,
+            'blue_team_name': blueName,
+            'red_team': redPlayer,
+            'red_team_name': redName,
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -215,13 +223,21 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     
     async def undo(self, event):
         game = cache.get(f'{self.game_id}_game')
+        bluePlayer = game.get_blue()
+        redPlayer = game.get_red()
+        blueName = cache.get(f'{self.game_id}_{bluePlayer}')['team_name']
+        redName = cache.get(f'{self.game_id}_{redPlayer}')['team_name']
         game.undo_turn()
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
             'turn_player': game.get_turn_player(),
-            'turn_index': game.turn_index
+            'turn_index': game.turn_index,
+            'blue_team': bluePlayer,
+            'blue_team_name': blueName,
+            'red_team': redPlayer,
+            'red_team_name': redName,
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -234,6 +250,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         
     async def draft_ban(self, event):
         game = cache.get(f'{self.game_id}_game')
+        bluePlayer = game.get_blue()
+        redPlayer = game.get_red()
+        blueName = cache.get(f'{self.game_id}_{bluePlayer}')['team_name']
+        redName = cache.get(f'{self.game_id}_{redPlayer}')['team_name']
         res = game.update_state(event, 'ban')
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
@@ -241,12 +261,20 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             'game_state': game.get_state(),
             'success': res,
             'turn_player': game.get_turn_player(),
-            'turn_index': game.turn_index
+            'turn_index': game.turn_index,
+            'blue_team': bluePlayer,
+            'blue_team_name': blueName,
+            'red_team': redPlayer,
+            'red_team_name': redName,
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
     
     async def draft_pick(self, event):
         game = cache.get(f'{self.game_id}_game')
+        bluePlayer = game.get_blue()
+        redPlayer = game.get_red()
+        blueName = cache.get(f'{self.game_id}_{bluePlayer}')['team_name']
+        redName = cache.get(f'{self.game_id}_{redPlayer}')['team_name']
         res = game.update_state(event, 'pick')
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
@@ -254,19 +282,31 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             'game_state': game.get_state(),
             'success': res,
             'turn_player': game.get_turn_player(),
-            'turn_index': game.turn_index
+            'turn_index': game.turn_index,
+            'blue_team': bluePlayer,
+            'blue_team_name': blueName,
+            'red_team': redPlayer,
+            'red_team_name': redName,
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
     
     async def sig_eid_change(self, event):
         game = cache.get(f'{self.game_id}_game')
         game.sig_eid_change(event)
+        bluePlayer = game.get_blue()
+        redPlayer = game.get_red()
+        blueName = cache.get(f'{self.game_id}_{bluePlayer}')['team_name']
+        redName = cache.get(f'{self.game_id}_{redPlayer}')['team_name']
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_STATE.value,
             'game_state': game.get_state(),
             'turn_player': game.get_turn_player(),
-            'turn_index': game.turn_index
+            'turn_index': game.turn_index,
+            'blue_team': bluePlayer,
+            'blue_team_name': blueName,
+            'red_team': redPlayer,
+            'red_team_name': redName,
         }
         await self.channel_layer.group_send(self.group_name, { 'type': MessageType.FRONT_END_MESSAGE.value, 'message': payload })
         
