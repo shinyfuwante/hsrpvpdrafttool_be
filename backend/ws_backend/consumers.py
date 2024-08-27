@@ -85,7 +85,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             await self.channel_layer.group_send(self.group_name, {
                 'type': MessageType.GAME_READY.value,
             })
-        
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -139,6 +138,13 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         handler = getattr(self, message_type)
         await handler(content)
         
+    async def init_game(self, event):
+        #get the user name from the message from "player_name"
+        self.team_name = event.get('team_name')
+        cache.set(f'{self.game_id}_{self.cid}', {
+            'team_name': self.team_name,
+        }, self.cache_timeout)
+        
     async def game_ready(self, event):
         participants = cache.get(f'{self.game_id}_cids')
         if participants and len(participants) == 2:
@@ -173,13 +179,17 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             })
             return
         game = Game(self.game_id, bluePlayer, redPlayer)
+        blueName = cache.get(f'{self.game_id}_{bluePlayer}')['team_name']
+        redName = cache.get(f'{self.game_id}_{redPlayer}')['team_name']
         cache.set(f'{self.game_id}_game', game, self.cache_timeout)
         payload = {
             'message_type': MessageType.GAME_START.value,
             'game_state': game.get_state(),
             'turn_player': game.get_turn_player(),
             'blue_team': bluePlayer,
-            'red_team': redPlayer
+            'blue_team_name': blueName,
+            'red_team': redPlayer,
+            'red_team_name': redName,
         }
         message = {
                 'type': MessageType.FRONT_END_MESSAGE.value,
@@ -263,4 +273,43 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
     async def front_end_message(self, event):
         print('received front end message')
         await self.send_json(event)
-        
+
+
+
+class SpectatorConsumer(GameConsumer):
+    async def connect(self):
+        # Called when the WebSocket is handshaking
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.group_name = f'game_{self.game_id}'
+        query_string = parse_qs(self.scope['query_string'].decode('utf8'))
+        self.cid = query_string.get('cid')[0]
+        if cache.get(f'{self.game_id}_rule_set'):
+            self.rule_set = cache.get(f'{self.game_id}_rule_set')
+        else:
+            self.rule_set = query_string.get('ruleSet', ['phd_standard'])[0]
+            print(self.rule_set)
+            cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
+
+        # Accept the connection
+        await self.accept()
+
+        # Add this consumer to the game group
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+
+    async def disconnect(self, close_code):
+        # Called when the WebSocket closes
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+
+    async def receive_json(self, content):
+        # Spectators cannot publish anything to the channel, so this method is empty
+        pass
+    
+    async def front_end_message(self, event):
+        # print('received front end message for spectators')
+        await self.send_json(event)
