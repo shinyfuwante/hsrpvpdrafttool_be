@@ -29,6 +29,13 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             self.rule_set = query_string.get('ruleSet', ['phd_standard'])[0]
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
+        
+        if cache.get(f'{self.game_id}_ruleSetSelection'):
+            self.rule_set_selection = cache.get(f'{self.game_id}_ruleSetSelection')
+        else:
+            self.rule_set_selection = query_string.get('ruleSetSelection', ['phd_standard'])[0]
+            print(self.rule_set_selection)
+            cache.set(f'{self.game_id}_ruleSetSelection', self.rule_set_selection, self.cache_timeout)
             
         self.cid = query_string.get('cid')[0]
         print("cid: ", self.cid)
@@ -168,7 +175,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                     'message_type': MessageType.GAME_READY.value,
                     'cid': self.cid,
                     'selector': selector,
-                    'rule_set': self.rule_set
+                    'rule_set': self.rule_set,
+                    'rule_set_selection': self.rule_set_selection
                 }
             }
             await self.send_json(message)
@@ -329,7 +337,13 @@ class SpectatorConsumer(GameConsumer):
             self.rule_set = query_string.get('ruleSet', ['phd_standard'])[0]
             print(self.rule_set)
             cache.set(f'{self.game_id}_rule_set', self.rule_set, self.cache_timeout)
-
+        
+        if cache.get(f'{self.game_id}_ruleSetSelection'):
+            self.rule_set_selection = cache.get(f'{self.game_id}ruleSetSelection')
+        else:
+            self.rule_set_selection = query_string.get('ruleSetSelection', ['phd_standard'])[0]
+            print(self.rule_set_selection)
+            cache.set(f'{self.game_id}_ruleSetSelection', self.rule_set_selection, self.cache_timeout)
         # Accept the connection
         await self.accept()
 
